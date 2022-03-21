@@ -1,12 +1,21 @@
 import React from 'react';
 import LeftLayout from './leftLayout';
 import TopLayout from './topLayout';
+import { MenuListType } from '../../typeList';
 
-function Layout(props: any) {
+interface LayouType {
+  theme: any;
+  MenuDirection: string;
+  historyList: Array<MenuListType>;
+  children: any;
+}
+
+function Layout(props: LayouType) {
+  const { MenuDirection, ...other } = props;
   return (
     <div>
-      <LeftLayout {...props} />
-      <TopLayout {...props} />
+      {MenuDirection === 'TOP' && <TopLayout {...other} />}
+      {MenuDirection === 'LEFT' && <LeftLayout {...other} />}
     </div>
   );
 }

@@ -9,22 +9,28 @@
  *   问题：可能会把css/@babel/polyfile (副作用)文件干掉
  *   解决："sideEffects":["*.css"]
  * */
+const WorkboxPlugin = require('workbox-webpack-plugin'); // 引入 PWA 插件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // 压缩css文件
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
+const { resolve } = require('path');
+const TerserPlugin = require('terser-webpack-plugin'); // 压缩js打包文件 优化build速度、优化start速度
 
 module.exports = merge(common, {
   // 启动环境
-  mode: process.env.NODE_ENV,
-
+  mode: 'production',
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'css/main.css',
       chunkFilename: '[id].css',
     }),
     new CssMinimizerPlugin(),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
   ],
 });

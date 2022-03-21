@@ -61,11 +61,11 @@ const tailFormItemLayout = {
   },
 };
 
-function RegistrationForm() {
+const RegistrationForm = () => {
   const [form] = Form.useForm();
 
-  const onFinish = () => {
-    console.log('111');
+  const onFinish = (values: any) => {
+    console.log('Received values of form: ', values);
   };
 
   const prefixSelector = (
@@ -171,13 +171,7 @@ function RegistrationForm() {
         name="nickname"
         label="Nickname"
         tooltip="What do you want others to call you?"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your nickname!',
-            whitespace: true,
-          },
-        ]}
+        rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
       >
         <Input />
       </Form.Item>
@@ -185,13 +179,7 @@ function RegistrationForm() {
       <Form.Item
         name="residence"
         label="Habitual Residence"
-        rules={[
-          {
-            type: 'array',
-            required: true,
-            message: 'Please select your habitual residence!',
-          },
-        ]}
+        rules={[{ type: 'array', required: true, message: 'Please select your habitual residence!' }]}
       >
         <Cascader options={residences} />
       </Form.Item>
@@ -236,12 +224,7 @@ function RegistrationForm() {
             <Form.Item
               name="captcha"
               noStyle
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input the captcha you got!',
-                },
-              ]}
+              rules={[{ required: true, message: 'Please input the captcha you got!' }]}
             >
               <Input />
             </Form.Item>
@@ -251,6 +234,7 @@ function RegistrationForm() {
           </Col>
         </Row>
       </Form.Item>
+
       <Form.Item
         name="agreement"
         valuePropName="checked"
@@ -262,7 +246,7 @@ function RegistrationForm() {
         {...tailFormItemLayout}
       >
         <Checkbox>
-          I have read the <a href="www.baidu.com">agreement</a>
+          I have read the <a href="">agreement</a>
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
@@ -272,6 +256,6 @@ function RegistrationForm() {
       </Form.Item>
     </Form>
   );
-}
+};
 
 export default RegistrationForm;

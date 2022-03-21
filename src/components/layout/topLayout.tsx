@@ -1,19 +1,16 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import historyList from '../../utils/historyList';
+import { MenuListType } from '../../typeList';
 import stules from './topLayout.less';
 
+type MenuTheme = any;
 interface PropsType {
   children: any;
-}
-
-interface MenuListType {
-  path: string;
-  icon: ReactElement;
-  name: string;
-  children?: Array<MenuListType>;
+  theme: MenuTheme | undefined;
+  historyList: Array<MenuListType>;
 }
 
 const { SubMenu } = Menu;
@@ -24,7 +21,7 @@ function TopLayout(props: PropsType) {
   const [openKeys, setopenKeys] = useState<string[]>([]);
   const pathList = historyList();
   const history = useHistory();
-  const { children } = props;
+  const { children, theme } = props;
 
   const openKeysList = () => {
     const openList: string[] = [];
@@ -50,13 +47,15 @@ function TopLayout(props: PropsType) {
 
   const subMenuList = (items: MenuListType) => (
     <SubMenu key={items.path} icon={items.icon} title={items.name}>
-      {(items?.children || []).map((itemChildren: MenuListType) => ((itemChildren?.children || []).length > 0 ? (
-        subMenuList(itemChildren)
-      ) : (
-        <Menu.Item key={itemChildren.path} icon={itemChildren.icon}>
-          {itemChildren.name}
-        </Menu.Item>
-      )))}
+      {(items?.children || []).map((itemChildren: MenuListType) =>
+        (itemChildren?.children || []).length > 0 ? (
+          subMenuList(itemChildren)
+        ) : (
+          <Menu.Item key={itemChildren.path} icon={itemChildren.icon}>
+            {itemChildren.name}
+          </Menu.Item>
+        ),
+      )}
     </SubMenu>
   );
 
@@ -73,32 +72,29 @@ function TopLayout(props: PropsType) {
   const change = (item: string[]) => {
     setopenKeys(_.compact(item));
   };
+  const themeColor = theme === 'drak' ? '#001529' : '#fff';
   return (
     <Layout className="layout">
-      <Header>
+      <Header style={{ background: themeColor }}>
         <Menu
           onClick={onMenuClick}
           selectedKeys={selectedKeys}
           openKeys={openKeys}
           onOpenChange={change}
-          theme="dark"
+          theme={theme}
           mode="horizontal"
-          defaultSelectedKeys={['2']}
         >
           {menuList}
         </Menu>
-        <div className={stules.stules} />
+        <div className={stules.plusginaqwwe} />
       </Header>
-      <Content style={{ padding: '0 50px' }}>
+      <Content style={{ padding: '0 50px', height: window.innerHeight - 142 }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
           <Breadcrumb.Item>Home</Breadcrumb.Item>
           <Breadcrumb.Item>List</Breadcrumb.Item>
           <Breadcrumb.Item>App</Breadcrumb.Item>
         </Breadcrumb>
-        <div className="site-layout-content">
-          {' '}
-          {children}
-        </div>
+        <div className="site-layout-content"> {children}</div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
     </Layout>

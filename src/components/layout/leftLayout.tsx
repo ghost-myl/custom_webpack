@@ -1,19 +1,16 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import historyList from '../../utils/historyList';
 import style from './leftLayout.less';
+import { MenuListType } from '../../typeList';
+
+type MenuTheme = any;
 
 interface PropsType {
   children: any;
-}
-
-interface MenuListType {
-  path: string;
-  icon: ReactElement;
-  name: string;
-  children?: Array<MenuListType>;
+  historyList: Array<MenuListType>;
+  theme: MenuTheme | undefined;
 }
 
 const { SubMenu } = Menu;
@@ -21,9 +18,8 @@ const { Header, Content, Footer, Sider } = Layout;
 function LeftLayout(props: PropsType) {
   const [selectedKeys, setselectedKeys] = useState<string[]>(['']);
   const [openKeys, setopenKeys] = useState<string[]>([]);
-  const pathList = historyList();
   const history = useHistory();
-  const { children } = props;
+  const { children, historyList, theme = 'drak' } = props;
   const [collapsed, setcollapsed] = useState(false);
   const onCollapse = (item: boolean) => {
     setcollapsed(item);
@@ -53,17 +49,19 @@ function LeftLayout(props: PropsType) {
 
   const subMenuList = (items: MenuListType) => (
     <SubMenu key={items.path} icon={items.icon} title={items.name}>
-      {(items?.children || []).map((itemChildren: MenuListType) => ((itemChildren?.children || []).length > 0 ? (
-        subMenuList(itemChildren)
-      ) : (
-        <Menu.Item key={itemChildren.path} icon={itemChildren.icon}>
-          {itemChildren.name}
-        </Menu.Item>
-      )))}
+      {(items?.children || []).map((itemChildren: MenuListType) =>
+        (itemChildren?.children || []).length > 0 ? (
+          subMenuList(itemChildren)
+        ) : (
+          <Menu.Item key={itemChildren.path} icon={itemChildren.icon}>
+            {itemChildren.name}
+          </Menu.Item>
+        ),
+      )}
     </SubMenu>
   );
 
-  const menuList = (pathList || []).map((item: MenuListType) => {
+  const menuList = (historyList || []).map((item: MenuListType) => {
     if ((item?.children || []).length > 0) {
       return subMenuList(item);
     }
@@ -76,12 +74,13 @@ function LeftLayout(props: PropsType) {
   const change = (item: string[]) => {
     setopenKeys(_.compact(item));
   };
+  const themeColor = theme === 'drak' ? '#001529' : '#fff';
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+      <Sider collapsible collapsed={collapsed} onCollapse={onCollapse} style={{ background: themeColor }}>
         <div className={style.plusginaqwwe} />
         <Menu
-          theme="dark"
+          theme={theme}
           onOpenChange={change}
           onClick={onMenuClick}
           selectedKeys={selectedKeys}
@@ -92,8 +91,8 @@ function LeftLayout(props: PropsType) {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }} />
-        <Content style={{ margin: '0 16px' }}>
+        <Header className="site-layout-background" style={{ padding: 0, background: themeColor }} />
+        <Content style={{ margin: '0 16px', height: window.innerHeight - 142 }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>User</Breadcrumb.Item>
             <Breadcrumb.Item>Bill</Breadcrumb.Item>

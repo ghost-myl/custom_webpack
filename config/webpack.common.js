@@ -76,26 +76,13 @@ module.exports = {
     host: '127.0.0.1',
     compress: true,
     open: true,
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:8000',
-    //     pathRewrite: { '^/api': '' },
-    //     secure: false
-    //   }
-    // },
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
-        extractComments: true,
-        include: './src',
-      }),
-    ],
-    usedExports: true,
-    sideEffects: false,
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3002',
+        pathRewrite: { '^/api': '' },
+        secure: false,
+      },
+    },
   },
   module: {
     rules: [
@@ -168,6 +155,7 @@ module.exports = {
       minify: {
         removeAttributeQuotes: true,
         removeComments: true,
+        collapseWhitespace: true,
       },
     }),
     // 显示百分比编译
